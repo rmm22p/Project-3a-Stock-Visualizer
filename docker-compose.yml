@@ -1,0 +1,9 @@
+services:
+  stock-visualizer:
+    build: .
+    container_name: stock-visualizer
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    restart: unless-stopped

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Stock Data Visualizer</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #243b55;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 11px;
+            margin-top: 7px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 25px;
+            background-color: #243b55;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #365878;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #a00000;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .chart {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .chart img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Stock Data Visualizer</h1>
+
+    <p>Select a stock and chart options to view its market data.</p>
+
+    <form method="POST">
+
+        <label for="symbol">Stock Symbol:</label>
+
+        <select name="symbol" id="symbol" required>
+            <option value="">Select a stock</option>
+
+            {% for symbol in symbols %}
+                <option value="{{ symbol }}"
+                    {% if request.form.get('symbol') == symbol %}
+                        selected
+                    {% endif %}>
+                    {{ symbol }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="chart_type">Chart Type:</label>
+
+        <select name="chart_type" id="chart_type" required>
+            <option value="bar"
+                {% if request.form.get('chart_type') == 'bar' %}selected{% endif %}>
+                Bar
+            </option>
+
+            <option value="line"
+                {% if request.form.get('chart_type') == 'line' %}selected{% endif %}>
+                Line
+            </option>
+        </select>
+
+        <label for="time_series">Time Series:</label>
+
+        <select name="time_series" id="time_series" required>
+            <option value="intraday">Intraday</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+        </select>
+
+        <label for="start_date">Start Date:</label>
+
+        <input type="date" name="start_date"
+               id="start_date" required
+               value="{{ request.form.get('start_date', '') }}">
+
+        <label for="end_date">End Date:</label>
+
+        <input type="date" name="end_date"
+               id="end_date" required
+               value="{{ request.form.get('end_date', '') }}">
+
+        <button type="submit">Generate Chart</button>
+
+    </form>
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% if chart %}
+        <div class="chart">
+            <h2>Stock Chart</h2>
+            <img src="{{ chart }}" alt="Generated stock chart">
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
